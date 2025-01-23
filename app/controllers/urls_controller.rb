@@ -1,13 +1,13 @@
-class UrlsController < ApplicationController
+class UrlsController < ActionController::Base
   before_action :set_url, only: [ :show ]
 
   def new
     @url = Url.new
-    # render :new
-    respond_to do |format|
-      format.html  # This will look for 'new.html.erb'
-      format.json  # You can add a JSON response if needed
-    end
+    # Instead of v1 we can use below format to support both
+    # respond_to do |format|
+    #   format.html  # This will look for 'new.html.erb'
+    #   format.json  # You can add a JSON response if needed
+    # end
   end
 
   def create
@@ -21,7 +21,11 @@ class UrlsController < ApplicationController
   end
 
   def show
-    render json: { urls: Url.all }
+    if params[:short_url].present?
+      redirect_to @url.original_url, allow_other_host: true if @url.present? && @url.original_url.present?
+    else
+      render json: { url: Url.all  }
+    end
   end
 
   private

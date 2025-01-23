@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_22_153751) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_23_051339) do
+  create_table "api_tokens", force: :cascade do |t|
+    t.string "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_api_tokens_on_token"
+  end
+
   create_table "urls", force: :cascade do |t|
     t.string "original_url"
     t.string "short_url"
