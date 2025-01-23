@@ -1,7 +1,7 @@
 class Url < ApplicationRecord
   before_create :generate_short_url
 
-  validates :original_url, presence: true, format: URI::regexp(%w[http https])
+  validates :original_url, presence: true, format: URI.regexp(%w[http https])
 
   private
 
@@ -12,3 +12,4 @@ class Url < ApplicationRecord
     end
   end
 end
+
