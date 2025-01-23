@@ -1,0 +1,100 @@
+openapi: 3.0.1
+info:
+  description: "API for shortening URLs"
+  version: "1.0.0"
+  title: "URL Shortener API"
+  contact:
+    name: "API Support"
+    email: "support@example.com"
+
+host: "localhost:3000"  # Change this to your production or dev host
+basePath: "/api"
+schemes:
+  - "http"
+  - "https"
+
+components:
+  securitySchemes:
+    BearerAuth:  # Define the security scheme for Authorization header
+      type: "apiKey"
+      in: "header"
+      name: "Authorization"  # Name of the header
+      description: "Bearer token for API authentication"
+  
+security:
+  - BearerAuth: []  # Apply the security scheme to all paths by default
+
+paths:
+  /api/urls:
+    post:
+      summary: "Create a shortened URL"
+      description: "This endpoint creates a shortened URL from the original URL."
+      operationId: "createUrl"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "url"
+          description: "The original URL to shorten"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - original_url
+            properties:
+              original_url:
+                type: "string"
+                example: "https://example.com"
+      responses:
+        201:
+          description: "Successfully created a shortened URL"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  short_url:
+                    type: "string"
+                    example: "http://localhost:3000/abc123"
+        422:
+          description: "Invalid URL data"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  errors:
+                    type: "array"
+                    items:
+                      type: "string"
+                    example: ["Original URL is invalid"]
+
+  /api/urls/{short_url}:
+    get:
+      summary: "Get the original URL by shortened URL"
+      description: "This endpoint retrieves the original URL based on the shortened URL."
+      operationId: "getUrl"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "short_url"
+          in: "path"
+          description: "The shortened URL"
+          required: true
+          type: "string"
+          example: "abc123"
+      responses:
+        200:
+          description: "Successfully retrieved the original URL"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  original_url:
+                    type: "string"
+                    example: "https://example.com"
+        404:
+          description: "Shortened URL not found"
